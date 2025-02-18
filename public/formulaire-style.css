@@ -1,0 +1,71 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-color: black;    
+    height: 100vh;
+    color: white;
+}
+
+#container{
+
+    background-color: black;
+    
+    display: flex;
+    column-gap: 30px;
+    row-gap: 30px;
+}
+
+
+.menuNAV{
+    background-color: black;
+    font-size: 20px;
+    color: white;
+    margin-bottom: 10px;
+    height: 100px;
+}
+
+.menuNAV ul{
+    list-style: none;
+    display: flex;
+    column-gap: 35px ;
+    align-items: center;
+}
+
+.menuNAV ul li{
+
+    cursor: pointer;
+
+    padding: 5px;
+}
+
+.menuNAV ul li:hover{
+    border-bottom: 3px solid darkgray;
+}
+
+
+a{
+    text-decoration: none;
+    color: white;
+}
+
+
+.menuNAV ul li:hover{
+    color: darkgray;
+}
+
+
+
+#home{
+    background-color: lightgray;
+    border-radius: 10px; 
+    width: 90px;
+    padding: 5px;
+    text-align: center;
+}
+
+#home img{
+    width: 40%;
+}

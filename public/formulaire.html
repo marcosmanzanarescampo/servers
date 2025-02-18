@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>formulaire nouveau utilisateur</title>
+    <link rel="stylesheet" href="formulaire-style.css">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <nav class="menuNAV">
+        <ul>
+            <li><a href="index.html"><div id="home"><img src="../images/home.png" alt=""></div></a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <h2>Formulaire nouveau produit</h2>
+        <form id='formulaire' method="post">
+            <label for="name">Nom :</label><br>
+            <input type="text" id="name" name="name" required><br><br>
+
+            <label for="description">Description :</label><br>
+            <textarea id="description" name="description" rows="4" cols="50" required></textarea><br><br>
+    
+           <input type="submit" id='submit' value="Envoyer">
+        </form>
+
+    </div>
+    
+    <script src="formulaire.js"></script>
+</body>
+</html>
