@@ -20,10 +20,7 @@ formulaire.addEventListener('submit', function(event){
         description: document.querySelector('#description').value 
     }
 
-    // ok
-    console.log(JSON.stringify(formData));
-    console.log(url);
-
+console.log('Requête POST avec:' + JSON.stringify(formData));
 
     // Réalisation de la requête POST
     fetch(url, {

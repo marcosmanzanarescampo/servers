@@ -9,31 +9,13 @@ const filePath = path.join(__dirname, "../data.json");
 const PORT_JSON = 4000;
 const ROUTE = '/data';
 
-// // Exemple de données
-
-// try {
-//   // Lire le contenu du fichier
-//   const dataBuffer = fs.readFileSync(path.join(__dirname, 'data.json'));
-
-//   // Convertir le buffer en chaîne de caractères
-//   const dataString = dataBuffer.toString();
-
-//   // Parser la chaîne de caractères en objet JavaScript
-//   const data = JSON.parse(dataString);
-
-//   console.log(data);
-// } catch (err) {
-//   console.error('Erreur lors de la lecture du fichier:', err);
-// }
-
-
-
 
 console.log("FILE PATH:",filePath);
 
+
 // Créer le serveur
 const server = http.createServer((req, res) => {
-    // Configurer les en-têtes pour CORS
+      // Configurer les en-têtes pour CORS
       // Gérer les requêtes OPTIONS (pré-vérification CORS)
       if (req.method === "OPTIONS") {
         res.writeHead(204, {
@@ -74,8 +56,13 @@ const server = http.createServer((req, res) => {
                 res.end(data || "[]");
                 console.log("Contenu JSON brut :", data);
             }
-        })}
-        else if (req.method === 'POST' && req.url === ROUTE) {
+        })
+    }
+    else if (req.method === 'POST' && req.url === ROUTE) {
+
+            console.log('Dans le corp du POST...');
+            
+
             let body = '';
         
             // Collecter les données envoyées
@@ -87,10 +74,10 @@ const server = http.createServer((req, res) => {
             req.on('end', () => {
                 try {
                     const formData = JSON.parse(body); // Convertir en objet JS
+                    let articles = [];
         
                     // Lire le fichier JSON existant
                     fs.readFile(filePath, "utf8", (err, data) => {
-                        let articles = [];
         
                         if (!err && data) {
                             try {
@@ -107,11 +94,10 @@ const server = http.createServer((req, res) => {
                         // ajouter un ID automatiquement!
 
                         formData.id = articles.length + 1;
-
         
                         // Ajouter les nouvelles données
-                        articles.push(formData);
-        
+                        articles.push(formData);      
+                        
                         // Réécrire le fichier JSON avec les nouvelles données
                         fs.writeFile(filePath, JSON.stringify(articles, null, 2), (writeErr) => {
                             if (writeErr) {
@@ -119,14 +105,12 @@ const server = http.createServer((req, res) => {
                                 res.end(JSON.stringify({ error: "Erreur lors de l'enregistrement des données" }));
                                 return;
                             }
-        
+    
                             // Répondre avec succès
                             res.writeHead(200, { 'Content-Type': 'application/json' });
-                            res.end(JSON.stringify({
-                                message: 'Données enregistrées avec succès',
-                                data: formData
-                            }));
+                            res.end(JSON.stringify({ message: 'Données enregistrées avec succès' }));
                         });
+
                     });
         
                 } catch (error) {
@@ -137,18 +121,99 @@ const server = http.createServer((req, res) => {
             });
             return;
         }
+        else if (req.method === 'PUT' && req.url === ROUTE){
+            //Récuperation de l'élement à mettre à jour
+            // const userID = parseInt(req.url.split("/")[2], 10);
+
+            console.log("Dans le corps du PUT...");
+            
+
+            let body = "";
+
+            req.on("data", chunk => {
+                body += chunk.toString();
+            });
+
+            req.on("end", () => {
+                try{
+
+                    // console.log("Fin de chargement de donnèes:" + JSON.parse(body));
+                    console.log("données passées au PUT:" + body);
+                    
+
+                    // liste d'elements récuperés du fichier
+                    let articles = [];
         
-    else {
-        res.writeHead(404, { "Content-Type": "text/plain" });
-        res.end("Not Found");
-    }
+                    // Lire le fichier JSON existant
+                    fs.readFile(filePath, "utf8", (err, data) => {
+                        
+                        console.log("readfile : " + (data));
+                        if (!err && data) {        
+                                articles = data; // Parser le fichier existant
+                                console.log("readfile articles: " + articles);                 
+                        }
+
+                    });
+
+                    console.log("Données lus du fichier de données: " + (articles));
+
+
+                    console.log("Element à mettre à jour: " + (body));
+                    
+                    
+                    // Mise à jour de l'élement
+                    
+                    const {id, name, description} = (body);
+                    
+                    console.log("index de l'élement à mettre à jour: "+ id);
+
+
+                    articles[id] = {
+                        id: id,
+                        name: name,
+                        description: description
+                    };
 
 
 
-});
+
+                    // Réécrire le fichier JSON avec les nouvelles données
+                    fs.writeFile(filePath, JSON.stringify(articles, null, 2), (writeErr) => {
+                        if (writeErr) {
+                            res.writeHead(500, { 'Content-Type': 'application/json' });
+                            res.end(JSON.stringify({ error: "Erreur lors de l'enregistrement des données" }));
+                            return;
+                        }
+    
+                        // Répondre avec succès
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ message: 'Données enregistrées avec succès' }));
+                    });
+
+
+
+                    res.writeHead(200, {"Content-Type": "application/json"});
+                    res.end(JSON.stringify({ message: "Données correctement mises à jour"}));
+
+
+                    // Mise à jour de l'élement
+
+                }catch(error){
+                    res.writeHead(400, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({ message: "Données invalides"}));
+                }
+            });
+        }
+        else{
+
+            res.writeHead(404, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: "Route non trouvée" }));         
+
+        };        
+    });
+
 
 // Lancer le serveur
 server.listen(PORT_JSON,hostname, () => {
     console.log(`Serveur API en cours d'exécution sur http://localhost:${PORT_JSON}`);
-    console.log(filePath);
 });

@@ -82,7 +82,8 @@ const fs = require('fs');     // Module pour la gestion des fichiers
             
             case 'js':
               
-            mime = 'text/js';
+            mime = 'application/javascript';
+
             break;
             
             // Bonus!
